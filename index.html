@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RPG - The Dark Star</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png">
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Goudy+Bookletter+1911&family=Uncial+Antiqua&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/f061e4cbde.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+    <main>
+      <!-- Character Generation -  Swaps Off on Game Start -->
+      <div id="characterGenContainer">
+        <div class="header">
+          <h1>The Dark Star</h1>
+        </div>
+        <div id="cgScreen">
+          <img id="cgImage" src="./assets/gamedisplay/0TitleScreen.png" alt="Character Image Display" />
+        </div>
+        <form id="characterGenForm">
+          <fieldset>
+            <label id="cgNameLabel" for="cgNameInput">Who is your champion?</label>
+            <input id="cgNameInput" name="name" type="text" placeholder="Type in your character's name" autocomplete="on" required />
+            <label id="cgClassLabel" for="cgClassSelect">Class:</label>
+            <select id="cgClassSelect" name="cgClassSelect" required>
+              <option value="Voidstalker">Voidstalker - Balanced - </option>
+              <option value="Shadowblade">Shadowblade - Offense Focused - </option>
+              <option value="Iron Warden">Iron Warden - Defense Focused - </option>
+            </select>
+          </fieldset>
+
+          <div id="startContainer">
+            <input id="startButton" type="submit" value="Begin Adventure" />
+          </div>
+        </form>
+      </div>
+
+      <div id="game">
+        <!-- gameMenu - Toggles On -->
+        <div id="gameMenuContainer">
+          <div id="gameMenu">
+            <div id="gameMenuHeader">
+              <span>Menu</span>
+            </div>
+            <div id="menuOptions">
+              <button id="continue-button" type="button">
+                <span class="btnText">Continue</span>
+              </button>
+              <button id="save-game-button" type="button">
+                <span class="btnText">Save Game</span>
+              </button>
+              <button id="load-game-button" type="button">
+                <span class="btnText">Load Game</span>
+              </button>
+              <button id="restart-game-button" type="button">
+                <span class="btnText">Restart Game</span>
+              </button>
+
+              <div id="muteButtonsContainer">
+                <button id="mute-bgm-button" type="button">
+                  <span class="btnText muteBtn">Mute BGM</span>
+                </button>
+                <button id="unmute-bgm-button" type="button">
+                  <span class="btnText muteBtn">Unmute BGM</span>
+                </button>
+              </div>
+            
+              <label for="bgm-volume-slider">BGM Volume:</label>
+              <input type="range" id="bgm-volume-slider" class="volume-slider" min="0" max="1" step="0.1" value="1">
+              <label for="sfx-volume-slider">SFX Volume:</label>
+              <input type="range" id="sfx-volume-slider" class="volume-slider" min="0" max="1" step="0.1" value="1">
+            </div>
+          </div>
+        </div>
+        <!-- Top Menu btn 10,11 -  Stays On -->
+        <div id="topMenuHeader">
+        <div class="locationContainer">
+          <button id="button10">
+            <img id="btnIcon10" src="./assets/icons/blackvaleIcon.png" alt="Location" />
+          </button>
+          <span id="locationName">Blackvale</span>
+        </div>
+          <button id="button11">
+            <img id="btnIcon11" src="./assets/icons/menuIcon.png" alt="Header Right" />
+          </button>
+        </div>
+        <!-- Main Display - Toggles Off During Menus -->
+        <div id="screen">
+          <div id="fadeOverlay"></div>
+          <div id="enemyStats">
+            <span class="stat"
+              ><strong><span id="enemyName"></span></strong
+            ></span>
+            <span class="stat"
+              >Health: <strong><span id="enemyHealth"></span></strong
+            ></span>
+          </div>
+          <div id="animationContainer" class="animationContainer playerAttack"></div>
+          <img
+            id="enemyContainer"
+            src="./assets/sprites/oozeSlimeImg.png"
+            alt="Enemy Container"
+          />
+          <img
+            id="npcContainer"
+            src="./assets/sprites/bartenderImg.png"
+            alt="NPC Container"
+          />
+          <div id="dialogueContainer">
+            <div id="npcName">Default</div>
+            <hr>
+            <div id="dialogue">Welcome...</div>
+          </div>
+          <div id="bountyBoardContainer">
+            <span class="bountyBoardHeader"></span>
+
+            <div id="bountyRequest1" class="bountyContainer">
+              
+            </div>
+
+            <div id="bountyRequest2" class="bountyContainer">
+              
+            </div>
+
+            <div id="bountyRequest3" class="bountyContainer">
+              
+            </div>
+
+          </div>
+          <img id="gameImage" src="./assets/gamedisplay/0townSquareImg.png" alt="Game Image Display" />
+        </div>
+        <!-- Display of Character Menu - Toggles On During CS Menus  -->
+        <div id="characterStatsContainer">
+          <div id="characterStatCol1">
+            <span class="equippedMenuHeader">Equipped:</span>
+
+            <div class="leftEquipContainer">
+              <div class="equippedContainer">
+                <div id="weaponContainer" class="tooltip-target" data-item-id="Wooden Club" data-category="weapons">
+                  <img id="currentWeaponIcon" src="./assets/icons/equippedWeaponIcon.png">
+                </div>
+              </div>
+            </div>
+
+            <img id="equippedImage" src="./assets/icons/characterEquipped.png" alt="Character Image" />
+            
+            <div class="rightEquipContainer">
+              <div class="equippedContainer">
+                <div id="armorContainer" class="tooltip-target" data-item-id="Cloth Tunic" data-category="armor">
+                  <img id="currentArmorIcon" src="./assets/icons/equippedArmorIcon.png">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div id="characterStatCol2">
+            <span class="menuHeader">Character Stats:</span>
+            <div class="statContainer">
+              <table>
+                <tr>
+                  <td>Class:</td>
+                  <td><strong><span class="classText">Warrior</span></strong></td>
+                </tr>
+                <tr>
+                  <td>Level:</td>
+                  <td><strong><span class="lvlText">1</span></strong></td>
+                </tr>
+                <tr>
+                  <td>Xp:</td>
+                  <td><strong><span class="xpText">0</span> / <span class="reqXpText">10</span></strong></td>
+                </tr>
+                <tr>
+                  <td>Hp:</td>
+                  <td><strong><span class="healthText">100</span> / <span class="baseHealthText">100</span></strong></td>
+                </tr>
+                <tr>
+                  <td>Attack:</td>
+                  <td><strong><span class="atkText">0</span></strong></td>
+                </tr>
+                <tr>
+                  <td>Defense:</td>
+                  <td><strong><span class="defText">0</span></strong></td>
+                </tr>
+                <tr>
+                  <td>Gold:</td>
+                  <td><strong><span class="goldText">50</span></strong></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div id="equipmentStatCol2">
+            <span class="menuHeader">Equipment Stats:</span>
+            <div class="statContainer">
+              <!--TOOL TIP INFORMATION -->
+            </div>
+          </div>
+        </div>
+        <!-- Bar shows character Stats - Toggles Off During Menus  -->
+        <div id="stats">
+          <span class="stat"
+            ><strong><span class="nameText">Hero</span></strong></span
+          >
+          <span class="stat"
+            >Lvl: <strong><span class="lvlText">1</span></strong></span
+          >
+          <span class="stat"
+            >HP: <strong><span class="healthText">100</span> / <span class="baseHealthText">100</span></strong></span
+          >
+          <span class="stat"
+            >Focus: <strong><span class="focusText">3</span> / <span class="baseFocusText">3</span></strong></span
+          >
+          <span class="stat"
+            >Gold: <strong><span class="goldText">50</span></strong></span
+          >
+          
+        </div>
+        <!-- Bar for Inventory Header - Toggles On During CS Menus  -->
+        <div id="inventoryHeader">
+          <span class="stat">
+            <strong>Inventory </strong>
+          </span>
+        </div>
+        <!-- Main Game Controls btn 1,2,3 - Toggles Off During Menus  -->
+        <div id="controls">
+          <button id="button1" type="button">
+            <img id="btnIcon1" class="btnIcon" src="./assets/icons/tavernIcon.png" alt="Icon 1" />
+            <span class="btnText">Tavern</span>
+          </button>
+          <button id="button2" type="button">
+            <img id="btnIcon2" class="btnIcon" src="./assets/icons/marketIcon.png" alt="Icon 2" />
+            <span class="btnText">Market Street</span>
+          </button>
+          <button id="button3" type="button">
+            <img id="btnIcon3" class="btnIcon" src="./assets/icons/theSprawlIcon.png" alt="Icon 3" />
+            <span class="btnText">The Sprawl</span>
+          </button>
+        </div>
+        <!-- Extra Game Controls btn 4,5,6 - currently unused  -->
+        <div id="controlsRowTwo">
+          <button id="button4" type="button">
+            <img id="btnIcon4" class="btnIcon" src="./assets/icons/testRed.png" alt="Icon 4" />
+            <span class="btnText">Blank</span>
+          </button>
+          <button id="button5" type="button">
+            <img id="btnIcon5" class="btnIcon" src="./assets/icons/testRed.png" alt="Icon 5" />
+            <span class="btnText">Blank</span>
+          </button>
+          <button id="button6" type="button">
+            <img id="btnIcon6" class="btnIcon" src="./assets/icons/testRed.png" alt="Icon 6" />
+            <span class="btnText">Blank</span>
+          </button>
+        </div>
+        <!-- Display Journal Menu - Toggles On During Journal Menus  -->
+        <div id="journalContainer">
+          <!-- Bounties Menu  -->
+          <div id="bountiesTab" class="hidden block">
+            <span class="journalMenuHeader"> ~ Bounties ~</span>
+
+            <div id="mainJournalBounty" class="bountyContainer">
+              <div class="enemyInfoContainer" >
+                <img id="mainBountyEnemy" class="bountyEnemyIcon" src="./assets/icons/baelrathIcon.png" alt="Baelrath">
+                <div class="bountyInfo">
+                  <span id="mainBountyCategory" class="bountyCategory">Main Bounty - Blackvale</span>
+                  <span>
+                    <span id="mainBountyObjective" class="bountyObjective">Slay Baelrath</span>
+                    <span class="objectiveNumber">
+                      <span id="mainCurrentNumDefeatBounty" class="bountyNumbers">0</span> / 
+                      <span id="mainCurrentNumTargetBounty" class="bountyNumbers">1</span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="enemyRewardContainer">
+                <span>Gold: <span id="mainBountyGoldReward">1000</span></span>              
+                <span>Xp: <span id="mainBountyXpReward">1000</span></span>
+              </div>
+            </div>
+
+            <div id="journalBounty1" class="bountyContainer">
+              
+            </div>
+            
+            <div id="journalBounty2" class="bountyContainer">
+              
+            </div>
+            
+            <div id="journalBounty3" class="bountyContainer">
+              
+            </div>
+        
+            <!--
+            <div id="bountyContainer2">
+              <div class="enemyInfoContainer">
+                <img id="bountyEnemyIcon2" src="./assets/icons/slimeIcon.png" alt="Slime">
+                <div class="bountyInfo">
+                  <span id="bountyCategory2">Bounty - Catacombs</span>
+                  <span>
+                    <span id="bountyObjective2">Defeat Slimes</span>
+                    <span class="objectiveNumber">
+                      <span id="currentNumDefeatBounty2">0</span> / 
+                      <span id="currentNumTargetBounty2">3</span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="enemyRewardContainer">
+                <span>Gold: <span id="bountyRewardGoldNumber2">50</span></span>              
+                <span>Xp: <span id="bountyRewardXpNumber2">10</span></span>
+              </div>
+            </div>
+
+            <div id="bountyContainer3">
+              <div class="enemyInfoContainer">
+                <img id="bountyEnemyIcon3" src="./assets/icons/fangedBeastIcon.png" alt="Fanged Beast">
+                <div class="bountyInfo">
+                  <span id="bountyCategory3">Bounty - Catacombs</span>
+                  <span>
+                    <span id="bountyObjective3">Defeat Fanged Beasts</span>
+                    <span class="objectiveNumber">
+                      <span id="currentNumDefeatBounty3">0</span> / 
+                      <span id="currentNumTargetBounty3">3</span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="enemyRewardContainer">
+                <span>Gold: <span id="bountyRewardGoldNumber3">50</span></span>              
+                <span>Xp: <span id="bountyRewardXpNumber3">10</span></span>
+              </div>
+            </div>
+
+            <div id="bountyContainer4">
+              <div class="enemyInfoContainer">
+                <img id="bountyEnemyIcon4" src="./assets/icons/theBestiaryIcon.png" alt="Zombie">
+                <div class="bountyInfo">
+                  <span id="bountyCategory4">Bounty - Catacombs</span>
+                  <span>
+                    <span id="bountyObjective4">Defeat Zombies</span>
+                    <span class="objectiveNumber">
+                      <span id="currentNumDefeatBounty4">0</span> / 
+                      <span id="currentNumTargetBounty4">3</span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="enemyRewardContainer">
+                <span>Gold: <span id="bountyRewardGoldNumber4">50</span></span>              
+                <span>Xp: <span id="bountyRewardXpNumber4">10</span></span>
+              </div>
+            </div>
+            -->
+          </div>
+          <!-- Notes Menu  -->
+          <div id="notesTab" class="hidden">
+            <span class="journalMenuHeader"> ~ Notes ~</span>
+            <!--
+            Introduction
+            Factions
+            Blackvale
+            Dungeon Locations
+            Baelrath The Corruptor
+            The Curse -->
+            <button class="collapsible"><img id="" src="./assets/icons/blackvaleIcon.png" alt="Town Square">Blackvale - Town Square</button>
+            <div class="content">
+              <p>
+                The town square is the heart of the city. Once a bustling center of activity, it now stands as a somber reminder of the city's former glory. 
+                The oppressive twilight cast by the Dark Star paints the square in sickly yellow hues, casting long, eerie shadows.
+              </p>
+              <hr>
+              <p>
+                Before the curse, the Town-Square was a vibrant gathering place for festivals, markets, and community events. Statues of Blackvale's founders, 
+                now cracked and worn, stand as silent witnesses to the city's decline.
+              </p>
+              <hr>
+              <p>
+                The square serves as a refuge for the remaining sane citizens. Makeshift stalls and tents offer basic supplies, and the air is filled with the 
+                hushed whispers of people sharing stories of survival and despair.
+              </p>
+              <hr>
+              <p>
+                The Town-Square is a symbol of hope and resilience. Despite the pervasive madness, it remains a beacon for those fighting against Baelrath's curse.
+              </p>
+            </div>
+
+            <button class="collapsible"><img id="" src="./assets/icons/tavernIcon.png" alt="Broken Lantern">Broken Lantern</button>
+            <div class="content">
+              <p>
+                The Broken Lantern is a dimly lit tavern located on the edge of the Town-Square. Its name comes from the cracked and flickering lantern that hangs 
+                above the entrance, a fitting emblem of the city's fractured state.
+              </p>
+              <hr>
+              <p>
+                Once known as "The Golden Lantern," the tavern was a lively place where merchants, travelers, and locals gathered to share stories and enjoy a pint. 
+                The curse has transformed it into a shadow of its former self, but it still serves as a crucial meeting point.
+              </p>
+              <hr>
+              <p>
+                The interior is filled with worn wooden tables, a roaring hearth, and the murmur of hushed conversations. The barkeep, a grizzled veteran named Harwin, 
+                keeps the peace and offers a listening ear to those who need it.
+              </p>
+              <hr>
+              <p>
+                The Broken Lantern is a place for rest and recovery. Players can find bounties to hunt monsters, partake in side work, and hear rumors that might lead 
+                to valuable rewards. The tavern is also a source of random events that can provide small, yet crucial, rewards.
+              </p>
+            </div>
+
+            <button class="collapsible"><img id="" src="./assets/icons/marketIcon.png" alt="Market Street">Market Street</button>
+            <div class="content">
+              <p>
+                Market Street is a narrow, winding road that was once the commercial lifeline of Blackvale. Now, it stands as a testament to the city's struggle 
+                against the encroaching darkness.
+              </p>
+              <hr>
+              <p>
+                Before the curse, Market Street was lined with bustling shops and stalls, offering everything from exotic spices to finely crafted goods. The air 
+                was filled with the sounds of haggling merchants and cheerful customers.
+              </p>
+              <hr>
+              <p>
+                The street is now a shadowy corridor, with many shops boarded up or abandoned. The remaining merchants are determined to keep their businesses running, 
+                despite the ever-present threat of madness and monsters.
+              </p>
+              <hr>
+              <p>
+                Market Street represents the enduring spirit of Blackvale's citizens. Despite the dire circumstances, the market continues to provide essential goods and services.
+              </p>
+            </div>
+
+            <button class="collapsible"><img id="" src="./assets/icons/itemShopIcon.png" alt="General Store">General Store</button>
+            <div class="content">
+              <p>
+                The General Store is a small, cluttered shop located on Market Street. It offers a variety of basic supplies that adventurers need to survive their forays into the Sprawl.
+              </p>
+              <hr>
+              <p>
+                The store is run by Marla, a shrewd and resourceful woman who has lived in Blackvale her entire life. She sources goods from the remnants of the city and occasional 
+                outside traders who brave the curse's edge.
+              </p>
+              <hr>
+              <p>
+                The shelves are stocked with essential items such as food rations, potions, torches, and other survival gear. Despite the scarcity of resources, Marla manages to keep 
+                the store well-supplied.
+              </p>
+              <hr>
+              <p>
+                The General Store is crucial for players to resupply and prepare for their journeys into the Sprawl. Marla often has useful information about recent events and potential dangers in the city.
+              </p>
+            </div>
+
+            <button class="collapsible"><img id="" src="./assets/icons/theForgeIcon.png" alt="The Forge">The Forge</button>
+            <div class="content">
+              <p>
+                The Forge is a blacksmith's workshop located at the far end of Market Street. It is one of the few places where weapons and armor are still crafted and repaired.
+              </p>
+              <hr>
+              <p>
+                The Forge is operated by Garin, a burly blacksmith with a gruff exterior but a heart of gold. Garin is a master of his craft, having apprenticed under his father and honed his skills over decades.
+              </p>
+              <hr>
+              <p>
+                The Forge offers a variety of services, including weapon and armor crafting, repairs, and upgrades. Garin uses whatever materials he can salvage or trade for, ensuring that adventurers are well-equipped for their battles.
+              </p>
+              <hr>
+              <p>
+                The Forge is vital for adventurers to maintain and enhance their equipment. Garin's craftsmanship can make the difference between life and death in the Sprawl. He also has stories of ancient weapons and lost techniques that may offer unique upgrades.
+              </p>
+            </div>
+
+            <button class="collapsible"><img id="" src="./assets/icons/trainingYardIcon.png" alt="The Training Yard">The Training Yard</button>
+            <div class="content">
+              <p>
+                The training yard, once a prestigious training ground for Blackvale's elite warriors, has become a crucial sanctuary amid the city's curse. Its towering stone walls are adorned with the banners and insignias of long-forgotten champions, now tattered and faded. Despite the decay, the arena remains a place of discipline and skill, where those who dare to venture into the Sprawl can hone their abilities.
+              </p>
+              <hr>
+              <p>
+                Surrounded by walls and guarded by ancient statues of past heroes, the training yard offers a stark contrast to the chaos beyond its gates. The ground is covered in soft sand, perfect for absorbing the impact of fierce combat training. Weapons and armor line the walls, and various training dummies and obstacles are scattered throughout the yard. The arena is divided into several sections: a sparring area, a skill practice zone, and a strategy planning corner.
+              </p>
+              <hr>
+              <p>
+                Captain Seraphina Drake, a former commander of Blackvale's guard, now oversees the training yard. Known for her fierce determination and unwavering discipline, Seraphina was one of the few who resisted the curse's initial onslaught, using her skills and leadership to protect those she could. Her  piercing green eyes reflect both her tactical brilliance and the sorrow of the city's downfall.
+              </p>
+            </div>
+
+            <button class="collapsible"><img id="" src="./assets/icons/theSprawlIcon.png" alt="The Sprawl">The Sprawl</button>
+            <div class="content">
+              <p>
+                The Sprawl, once the thriving outskirts of Blackvale, now stands as a haunting reminder of the city's tragic fall. This vast area was originally a bustling district where merchants, craftsmen, and common folk lived and worked, contributing to the city's prosperity. Narrow streets, lined with quaint houses and vibrant markets, wove through the district, creating a lively and interconnected community.
+              </p>
+              <hr>
+              <p>
+                However, with the arrival of Yelmurath's curse, the Sprawl became one of the first areas to succumb to the creeping darkness. Buildings that once echoed with laughter and trade now stand in ruin, their walls cracked and their windows shattered. The once-busy markets are now filled with the remains of abandoned stalls, and the cobblestone streets are overgrown with twisted, malevolent flora that seems to feed off the corruption in the air.
+              </p>
+              <hr>
+              <p>
+                The Sprawl is now a dangerous and unpredictable place, inhabited by twisted creatures and haunted by restless spirits. The district is divided into several corrupted zones, each with its own unique horrors. Among these are the Catacombs, where the dead do not rest; the Blighted Gardens, overrun with monstrous plants; and the Forsaken Market, where cursed merchants continue their eternal transactions.
+              </p>
+              <hr>
+              <p>
+                Despite its perilous nature, the Sprawl remains a crucial area for those seeking to understand the curse that plagues Blackvale. Brave souls venture into its depths, hoping to find clues, resources, or perhaps even a way to combat the dark magic that has taken hold. For these adventurers, the Sprawl offers both great danger and the promise of uncovering the secrets needed to save their city.
+              </p>
+            </div>
+
+            <button class="collapsible"><img id="" src="./assets/icons/catacombsIcon.png" alt="Catacombs">Catacombs</button>
+            <div class="content">
+              <p>
+                Beneath the city lies an ancient network of tunnels and crypts, known as the Catacombs of Blackvale. Originally intended as burial grounds for the city's honored dead, the catacombs have become a dark and treacherous place, overrun by the curse.
+              </p>
+            </div>
+
+          </div>
+          <!-- Bestiary Menu  -->
+          <div id="bestiaryTab" class="hidden">
+            <span class="journalMenuHeader"> ~ Bestiary ~</span>
+
+            <button class="collapsible"><img id="" src="./assets/icons/slimeIcon.png" alt="Ooze Slime">Ooze Slime</button>
+              <div class="content">
+              <p>Slimes are gelatinous creatures found in damp environments. They are known for their regenerative abilities and acidic bodies.</p>
+              </div>
+      
+              <button class="collapsible"><img id="" src="./assets/icons/burrowerIcon.png" alt="Necrotic Burrower">Necrotic Burrower</button>
+              <div class="content">
+                <p>These snake-like creatures have adapted to the dark magic of the catacombs, their bodies infused with necrotic energy. They leave a trail of decay wherever they go and can weaken the living with their touch..</p>
+              </div>
+              
+              <button class="collapsible"><img id="" src="./assets/icons/corpseIcon.png" alt="Arisen Corpse">Arisen Corpse</button>
+              <div class="content">
+                <p>Rotting corpses animated by dark magic, unending hunger in their eyes, attacking with decayed limbs.</p>
+              </div>
+
+              <button class="collapsible"><img id="" src="./assets/icons/ghoulIcon.png" alt="Feral Ghoul">Feral Ghoul</button>
+              <div class="content">
+                <p>Flesh-hungry undead attacking with savage bites and claws.</p>
+              </div>
+
+              <button class="collapsible"><img id="" src="./assets/icons/crawlerIcon.png" alt="Grave Crawler">Grave Crawler</button>
+              <div class="content">
+                <p>Grotesque, insect-like creatures that burrow through the walls and floors of the catacombs. They are attracted to the scent of the living and swarm their prey with overwhelming numbers.</p>
+              </div>
+
+              <button class="collapsible"><img id="" src="./assets/icons/reaverIcon.png" alt="Bone Reaver">Bone Reaver</button>
+              <div class="content">
+                <p>Skeletal warriors reanimated by dark magic, armed with rusted weapons. They attack with a ferocity fueled by their cursed existence.</p>
+              </div>
+
+              <button class="collapsible"><img id="" src="./assets/icons/baelrathIcon.png" alt="Baelrath the Corruptor">Baelrath the Corruptor</button>
+              <div class="content">
+                <p>Baelrath was once a respected scholar and alchemist in Blackvale. Known for his insatiable curiosity and brilliance, he was always on the lookout for hidden knowledge and forbidden secrets.</p>
+              </div>
+          </div>
+        </div>
+        <!-- Text Display - Toggles Off During Menus  -->
+        <div id="text">
+          Welcome to Blackvale. You must defeat Baelrath the Corruptor who is
+          preventing people from leaving the town. <br> You are in the town square.
+          Where do you want to go? Use the buttons above.
+        </div>
+        <!-- Players Inventory - Toggles On During CS Menus  -->
+        <div id="playerInventoryContainer">
+          <div class="inventoryTable">
+            <table>
+              <tr>
+                <td>Weapons:</td>
+                <td><span id="weaponList">Wooden Club</span></td>
+              </tr>
+              <tr>
+                <td>Armor:</td>
+                <td><span id="armorList">Cloth Tunic</span></td>
+              </tr>
+              <tr>
+                <td>Items:</td>
+                <td><span id="itemList"></span></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <!-- Footer Bar with controls btn 7,8,9 - Stays On  -->
+        <div id="controlsRowThree">
+          <button id="button7" type="button">
+            <img id="btnIcon7" class="btnIcon" src="./assets/icons/characterIcon.png" alt="Icon 7" />
+            <span class="btnText">Character</span>
+          </button>
+          <button id="button8" type="button">
+            <img id="btnIcon8" class="btnIcon" src="./assets/icons/journalIcon.png" alt="Icon 8" />
+            <span class="btnText">Journal</span>
+          </button>
+          <button id="button9" type="button">
+            <img id="btnIcon9" class="btnIcon" src="./assets/icons/testRed.png" alt="Icon 9" />
+            <span class="btnText">blank</span>
+          </button>
+        </div>
+      </div>
+
+    </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script  src="./assets/js/utility.js"></script>
+    <script  src="./assets//js/audiomanager.js"></script>
+    <script  src="./assets/js/script.js"></script>
+  </body>
+</html>
